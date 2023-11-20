@@ -22,7 +22,7 @@ if __name__ == '__main__':
         name='Sergey',
         surname='Ilin',
         faculty='Python',
-        course='5'
+        course=5
     )
 
     full_name = first_student.get_full_name()
