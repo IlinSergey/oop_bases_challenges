@@ -13,21 +13,33 @@ from datetime import datetime
 
 
 class Product:
-    def __init__(self, title, price, stock_quantity):
+    def __init__(self, title: str, price: float, stock_quantity: int):
         self.title = title
         self.price = price
         self.stock_quantity = stock_quantity
 
-    def get_discounted_price(self, discount_percentage):
+    def get_discounted_price(self, discount_percentage: int) -> float:
         return self.price * (1 - discount_percentage / 100)
 
-    def is_available(self):
+    def is_available(self) -> bool:
         return self.stock_quantity > 0
 
 
 class AlcoholProduct(Product):
-    pass  # код писать тут
+    def is_available(self) -> bool:
+        return super().is_available() and not (5 < datetime.now().hour < 23)
 
 
 if __name__ == '__main__':
-    pass  # код писать тут
+    product = Product(title='Bread', price=100.0, stock_quantity=10)
+    assert product.get_discounted_price(discount_percentage=10) == 90.0
+    assert product.stock_quantity == 10
+    assert product.is_available() is True
+    product.stock_quantity = 0
+    assert product.is_available() is False
+
+    alcohol_product = AlcoholProduct(title='Beer', price=80.0, stock_quantity=10)
+    assert alcohol_product.get_discounted_price(discount_percentage=10) == 72.0
+    assert alcohol_product.is_available() is False
+    alcohol_product.stock_quantity = 0
+    assert alcohol_product.is_available() is False
