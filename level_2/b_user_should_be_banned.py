@@ -17,12 +17,12 @@ class User:
         self.age = age
 
     def should_be_banned(self, banned_surname_list: list[str]) -> bool:
-        return self.surname.title() in banned_surname_list
+        return self.surname in banned_surname_list
 
     def __repr__(self) -> str:
         return f'name: {self.name}, surname: {self.surname}, age: {self.age}'
 
 
 if __name__ == '__main__':
-    user = User(name='John', surname='wilhelm', age=30)
+    user = User(name='John', surname='Wilhelm', age=30)
     assert user.should_be_banned(banned_surname_list=SURNAMES_TO_BAN) == True
