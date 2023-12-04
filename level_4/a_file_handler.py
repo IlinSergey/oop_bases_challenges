@@ -14,24 +14,35 @@
 """
 import csv
 import json
+from pprint import pprint
 
 
 class FileHandler:
-    def __init__(self, filename):
+    def __init__(self, filename: str) -> None:
         self.filename = filename
 
-    def read(self):
+    def read(self) -> str:
         with open(self.filename, 'r') as file:
             return file.read()
 
 
 class JSONHandler(FileHandler):
-    pass  # код писать тут
+    def read(self) -> dict:  # type: ignore[override]
+        with open(self.filename, 'r') as json_file:
+            return json.load(json_file)
 
 
 class CSVHandler(FileHandler):
-    pass  # код писать тут
+    def read(self) -> list[dict]:  # type: ignore[override]
+        with open(self.filename, 'r') as csv_file:
+            csv_reader = csv.DictReader(csv_file, delimiter=',')
+            return [row for row in csv_reader]
 
 
 if __name__ == '__main__':
-    pass  # код писать тут
+    file_reader = FileHandler('data/text.txt')
+    print(file_reader.read())  # noqa: T201
+    json_reader = JSONHandler('data/recipes.json')
+    pprint(json_reader.read())  # noqa: T203
+    csv_reader = CSVHandler('data/user_info.csv')
+    pprint(csv_reader.read())  # noqa: T203
