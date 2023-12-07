@@ -12,19 +12,26 @@
 
 
 class Product:
-    def __init__(self, title: str, price: float):
+    def __init__(self, title: str, price: float) -> None:
         self.title = title
         self.price = price
 
-    def get_product_info(self):
+    def get_product_info(self) -> str:
         return f'Product title: {self.title}, price: {self.price}'
 
 
 class FoodProductMixin:
-    def is_premium_food(self):
-        return self.price > 10
+    def is_premium_food(self) -> bool:
+        return self.price > 10  # type: ignore[attr-defined]
+
+
+class FoodProduct(FoodProductMixin, Product):
+    def get_product_info(self) -> str:
+        return super().get_product_info() + (' (Premium)') if self.is_premium_food() else super().get_product_info()
 
 
 if __name__ == '__main__':
-    pass  # код писать тут
-
+    premium_food = FoodProduct(title='Dragon fruit', price=15.0)
+    not_premium_food = FoodProduct(title='Bananas', price=5.0)
+    assert premium_food.get_product_info() == 'Product title: Dragon fruit, price: 15.0 (Premium)'
+    assert not_premium_food.get_product_info() == 'Product title: Bananas, price: 5.0'

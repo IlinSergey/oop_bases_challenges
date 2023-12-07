@@ -13,6 +13,7 @@ USERNAMES_IN_DB = ['Alice_2023', 'BobTheBuilder', 'CrazyCoder', 'DataDiva', 'Epi
 
 
 class Form:
+
     def __init__(self, username: str, password: str):
         self.username = username
         self.password = password
@@ -22,12 +23,22 @@ class Form:
 
 
 class AuthorizationFormMixin:
+
     def valid_form(self):
-        pass  # писать код тут
+        return super().valid_form() and self.username in USERNAMES_IN_DB
 
 
-# писать код тут
+class AuthorizationForm(AuthorizationFormMixin, Form):
+    pass
 
 
 if __name__ == '__main__':
-    pass  # писать код тут
+    auth_form_valid = AuthorizationForm(username='BobTheBuilder',
+                                        password='123456789')
+    auth_form_not_valid_password = AuthorizationForm(username='BobTheBuilder',
+                                                     password='1234567')
+    auth_form_user_not_in_db = AuthorizationForm(username='Bob',
+                                                 password='123456789')
+    assert auth_form_valid.valid_form() is True
+    assert auth_form_not_valid_password.valid_form() is False
+    assert auth_form_user_not_in_db.valid_form() is False

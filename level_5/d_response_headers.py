@@ -13,28 +13,37 @@
 
 
 class BaseResponse:
-    def __init__(self, content: str):
+
+    def __init__(self, content: str) -> None:
         self.content = content
 
-    def get_byte_content_length(self):
+    def get_byte_content_length(self) -> int:
         return len(self.content.encode('utf-8'))
 
 
 class BaseHeadersMixin:
-    def generate_base_headers(self):
+
+    def generate_base_headers(self) -> dict:
         return {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'user-agent': (
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
-                'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36'
-            ),
+            'user-agent':
+            ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
+             'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36'
+             ),
         }
 
-    def generate_headers(self):
+    def generate_headers(self) -> dict:
         return self.generate_base_headers()
 
 
-# код писать тут
+class CustomResponse(BaseHeadersMixin, BaseResponse):
+    def generate_headers(self) -> dict:
+        headers = super().generate_headers()
+        headers['Content-Length'] = self.get_byte_content_length()
+        return headers
+
 
 if __name__ == '__main__':
-    pass  # код писать тут
+    custom_responce = CustomResponse('Hello, world!')
+    target = {'Content-Type': 'application/x-www-form-urlencoded', 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36', 'Content-Length': 13}
+    assert custom_responce.generate_headers() == target
