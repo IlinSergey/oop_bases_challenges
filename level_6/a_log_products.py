@@ -8,6 +8,10 @@
        Добавьте миксин и используйте новый метод во всех методах основных классов.
     3. Вызовите у экземпляров PremiumProduct и DiscountedProduct все возможные методы и убедитесь, что вызовы логируются.
 """
+import sys
+
+from enum import Enum
+from io import StringIO
 
 
 class Product:
@@ -15,28 +19,68 @@ class Product:
         self.title = title
         self.price = price
 
-    def get_info(self):
+    def get_info(self) -> str:
         return f'Product {self.title} with price {self.price}'
 
 
-class PremiumProduct(Product):
+class PrintLoggerMixin():
+    def log(self, log_message: str) -> None:
+        print(log_message)
+
+
+class PremiumProduct(PrintLoggerMixin, Product):
     def increase_price(self):
+        self.log('increase_price method from PremiumProduct')
         self.price *= 1.2
 
-    def get_info(self):
+    def get_info(self) -> str:
+        self.log('get_info method from PremiumProduct')
         base_info = super().get_info()
         return f'{base_info} (Premium)'
 
 
-class DiscountedProduct(Product):
-    def decrease_price(self):
+class DiscountedProduct(PrintLoggerMixin, Product):
+    def decrease_price(self) -> None:
+        self.log('decrease_price method from Discountedroduct')
         self.price /= 1.2
 
-    def get_info(self):
+    def get_info(self) -> str:
+        self.log('get_info method from DiscountedProduct')
         base_info = super().get_info()
         return f'{base_info} (Discounted)'
 
 
 if __name__ == '__main__':
-    pass
 
+    class Methods(Enum):
+        get_info = 'get_info'
+        increase_price = 'increase_price'
+        decrease_price = 'decrease_price'
+
+    def get_output_from_method(product: PremiumProduct | DiscountedProduct,
+                               method: Methods) -> str:
+        captured_output = StringIO()
+        sys.stdout = captured_output
+
+        if method == Methods.get_info:
+            product.get_info()
+        else:
+            if isinstance(product, PremiumProduct):
+                product.increase_price()
+            else:
+                product.decrease_price()
+
+        sys.stdout = sys.__stdout__
+        return captured_output.getvalue().strip()
+
+    premium_product = PremiumProduct(title='Ikra', price=1000.00)
+    discounted_product = DiscountedProduct(title='Grechka', price=10.00)
+
+    assert get_output_from_method(premium_product,
+                                  Methods.get_info) == 'get_info method from PremiumProduct'
+    assert get_output_from_method(discounted_product,
+                                  Methods.get_info) == 'get_info method from DiscountedProduct'
+    assert get_output_from_method(premium_product,
+                                  Methods.increase_price) == 'increase_price method from PremiumProduct'
+    assert get_output_from_method(discounted_product,
+                                  Methods.decrease_price) == 'decrease_price method from Discountedroduct'
