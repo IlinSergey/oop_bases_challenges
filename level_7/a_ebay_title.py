@@ -7,17 +7,25 @@
        то что вы ожидаете.
 """
 
-EBAY_TITLE = 'eBay'
-
 
 class EbayProduct:
+    _ebay_title = 'eBay'
+
+    @property   # property для защиты атрибута от изменения
+    def ebay_title(self):
+        return self._ebay_title
+
     def __init__(self, title: str, price: float):
         self.title = title
         self.price = price
 
     def get_product_info(self):
-        return f'Product {self.title} with price {self.price} from {EBAY_TITLE} marketplace'
+        return f'Product {self.title} with price {self.price} from {self.ebay_title} marketplace'
+
+    def __call__(self):
+        return self.get_product_info()
 
 
 if __name__ == '__main__':
-    pass
+    ebay_product = EbayProduct(title='Book', price=10.0)
+    assert ebay_product() == 'Product Book with price 10.0 from eBay marketplace'
