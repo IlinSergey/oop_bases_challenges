@@ -9,7 +9,6 @@
     3. Вызовите у экземпляров PremiumProduct и DiscountedProduct все возможные методы и убедитесь, что вызовы логируются.
 """
 import sys
-
 from enum import Enum
 from io import StringIO
 
@@ -25,7 +24,7 @@ class Product:
 
 class PrintLoggerMixin():
     def log(self, log_message: str) -> None:
-        print(log_message)
+        print(log_message)  # noqa: T201
 
 
 class PremiumProduct(PrintLoggerMixin, Product):
@@ -62,12 +61,12 @@ if __name__ == '__main__':
         captured_output = StringIO()
         sys.stdout = captured_output
 
-        if method == Methods.get_info:
-            product.get_info()
-        else:
-            if isinstance(product, PremiumProduct):
+        match method:
+            case Methods.get_info:
+                product.get_info()
+            case Methods.increase_price:
                 product.increase_price()
-            else:
+            case Methods.decrease_price:
                 product.decrease_price()
 
         sys.stdout = sys.__stdout__
