@@ -29,23 +29,23 @@ class PrintLoggerMixin():
 
 class PremiumProduct(PrintLoggerMixin, Product):
     def increase_price(self):
-        self.log('increase_price method from PremiumProduct')
         self.price *= 1.2
+        self.log(f'Premium product new price: {self.price}')
 
     def get_info(self) -> str:
-        self.log('get_info method from PremiumProduct')
         base_info = super().get_info()
+        self.log(f'get info from Premium product with: {base_info}')
         return f'{base_info} (Premium)'
 
 
 class DiscountedProduct(PrintLoggerMixin, Product):
     def decrease_price(self) -> None:
-        self.log('decrease_price method from Discountedroduct')
+        self.log(f'Discounted product new price: {self.price}')
         self.price /= 1.2
 
     def get_info(self) -> str:
-        self.log('get_info method from DiscountedProduct')
         base_info = super().get_info()
+        self.log(f'get info from Discounted product with: {base_info}')
         return f'{base_info} (Discounted)'
 
 
@@ -76,10 +76,10 @@ if __name__ == '__main__':
     discounted_product = DiscountedProduct(title='Grechka', price=10.00)
 
     assert get_output_from_method(premium_product,
-                                  Methods.get_info) == 'get_info method from PremiumProduct'
+                                  Methods.get_info) == 'get info from Premium product with: Product Ikra with price 1000.0'
     assert get_output_from_method(discounted_product,
-                                  Methods.get_info) == 'get_info method from DiscountedProduct'
+                                  Methods.get_info) == 'get info from Discounted product with: Product Grechka with price 10.0'
     assert get_output_from_method(premium_product,
-                                  Methods.increase_price) == 'increase_price method from PremiumProduct'
+                                  Methods.increase_price) == 'Premium product new price: 1200.0'
     assert get_output_from_method(discounted_product,
-                                  Methods.decrease_price) == 'decrease_price method from Discountedroduct'
+                                  Methods.decrease_price) == 'Discounted product new price: 10.0'
