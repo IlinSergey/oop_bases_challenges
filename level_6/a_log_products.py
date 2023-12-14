@@ -40,8 +40,8 @@ class PremiumProduct(PrintLoggerMixin, Product):
 
 class DiscountedProduct(PrintLoggerMixin, Product):
     def decrease_price(self) -> None:
-        self.log(f'Discounted product new price: {self.price}')
         self.price /= 1.2
+        self.log(f'Discounted product new price: {self.price}')
 
     def get_info(self) -> str:
         base_info = super().get_info()
@@ -73,13 +73,13 @@ if __name__ == '__main__':
         return captured_output.getvalue().strip()
 
     premium_product = PremiumProduct(title='Ikra', price=1000.00)
-    discounted_product = DiscountedProduct(title='Grechka', price=10.00)
+    discounted_product = DiscountedProduct(title='Grechka', price=24.00)
 
     assert get_output_from_method(premium_product,
                                   Methods.get_info) == 'get info from Premium product with: Product Ikra with price 1000.0'
     assert get_output_from_method(discounted_product,
-                                  Methods.get_info) == 'get info from Discounted product with: Product Grechka with price 10.0'
+                                  Methods.get_info) == 'get info from Discounted product with: Product Grechka with price 24.0'
     assert get_output_from_method(premium_product,
                                   Methods.increase_price) == 'Premium product new price: 1200.0'
     assert get_output_from_method(discounted_product,
-                                  Methods.decrease_price) == 'Discounted product new price: 10.0'
+                                  Methods.decrease_price) == 'Discounted product new price: 20.0'
